@@ -29,9 +29,9 @@ class User < ApplicationRecord
   end
 
   def confirm_friend(user)
-    friendship = friendship_requests.find { |friendship| friendship.requesting_user == user }
-    friendship.request_status = true
-    friendship.save
+    friendships = friendship_requests.find { |friendship| friendship.requesting_user == user }
+    friendships.request_status = true
+    friendships.save
   end
 
   def reject_friend(user)
