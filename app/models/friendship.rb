@@ -15,5 +15,4 @@ class Friendship < ApplicationRecord
     current_friendship = find_by(user_id: user.id)
     current_friendship.destroy
   end
-
 end
