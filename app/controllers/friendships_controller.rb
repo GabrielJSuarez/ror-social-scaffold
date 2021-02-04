@@ -8,7 +8,7 @@ class FriendshipsController < ApplicationController
   end
 
   def create
-    @friendship = current_user.friendships.new(receiving_user_id: params[:receiving_user_id])
+    @friendship = current_user.friendships.new(friend_id: params[:friend_id])
     if @friendship.save
       redirect_to users_path, notice: 'Friendship request sent'
     else
@@ -18,13 +18,13 @@ class FriendshipsController < ApplicationController
 
   def update
     @user = User.find(params[:id])
-    @friendship = current_user.confirm_friend(@user)
+    @friendship = current_user.inverted_friendships.confirm_friend(@user)
     redirect_to users_path, notice: 'Friend Added'
   end
 
   def destroy
     @user = User.find(params[:id])
-    @friendship = current_user.reject_friend(@user)
+    @friendship = current_user.inverted_friendships.reject_friend(@user)
     redirect_to users_path, notice: 'Friend request rejected'
   end
 end
