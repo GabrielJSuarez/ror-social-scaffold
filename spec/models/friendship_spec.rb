@@ -28,7 +28,6 @@ RSpec.describe Friendship, type: :model do
       )
     end
 
-
     it '#confirm_friend' do
       false_friendship.save
       expect(receiver.inverted_friendships.confirm_friend(sender)).to be(true)
@@ -38,6 +37,5 @@ RSpec.describe Friendship, type: :model do
       false_friendship.save
       expect(receiver.inverted_friendships.reject_friend(sender)).to be_kind_of(Friendship)
     end
-
   end
 end

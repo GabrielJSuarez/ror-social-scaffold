@@ -27,7 +27,6 @@ RSpec.describe User, type: :model do
     it { should have_many(:inverted_friendships).class_name('Friendship').with_foreign_key('friend_id') }
 
     it { should have_many(:friend_requests).through(:inverted_friendships).source(:user) }
-
   end
 
   describe '#Friendships' do

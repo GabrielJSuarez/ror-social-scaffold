@@ -45,7 +45,6 @@ RSpec.describe 'Friend Requests ', type: :feature do
     expect(page).to have_content('Friend Added')
   end
 
-
   it 'Reject a friend request' do
     visit users_path
     click_link 'Send invitation'
