@@ -14,9 +14,19 @@ RSpec.describe User, type: :model do
 
     it { should have_many(:likes).dependent(:destroy) }
 
-    it { should have_many(:friendships).with_foreign_key('requesting_user_id') }
+    it { should have_many(:friendships) }
 
-    it { should have_many(:friendship_requests).with_foreign_key('receiving_user_id').class_name('Friendship') }
+    it { should have_many(:confirmed_friendships).class_name('Friendship') }
+
+    it { should have_many(:friends).through(:confirmed_friendships) }
+
+    it { should have_many(:pending_friendships).class_name('Friendship').with_foreign_key('user_id') }
+
+    it { should have_many(:pending_friends).through(:pending_friendships).source(:friend) }
+
+    it { should have_many(:inverted_friendships).class_name('Friendship').with_foreign_key('friend_id') }
+
+    it { should have_many(:friend_requests).through(:inverted_friendships).source(:user) }
   end
 
   describe '#Friendships' do
@@ -26,17 +36,17 @@ RSpec.describe User, type: :model do
 
     let(:true_friendship) do
       Friendship.new(
-        requesting_user: sender,
-        receiving_user: receiver,
-        request_status: true
+        user: sender,
+        friend: receiver,
+        confirmed: true
       )
     end
 
     let(:false_friendship) do
       Friendship.new(
-        requesting_user: sender,
-        receiving_user: receiver,
-        request_status: false
+        user: sender,
+        friend: receiver,
+        confirmed: false
       )
     end
 
@@ -47,29 +57,17 @@ RSpec.describe User, type: :model do
 
     it '#friend?' do
       true_friendship.save
-      expect(sender.friend?(receiver)).to be(true)
+      expect(sender.user_friend?(receiver)).to be(true)
     end
 
     it '#pending_friends' do
       false_friendship.save
-      expect(sender.pending_friends).to include(receiver)
+      expect(sender.user_pending_friends?(receiver)).to be(true)
     end
 
     it '#friend_request' do
       false_friendship.save
-      expect(receiver.friend_requests).to include(sender)
-    end
-
-    it '#confirm_friend' do
-      false_friendship.save
-      receiver.confirm_friend(sender)
-      expect(sender.friend?(receiver)).to be(true)
-    end
-
-    it '#reject_friend' do
-      false_friendship.save
-      receiver.reject_friend(sender)
-      expect(sender.friend?(receiver)).to be(false)
+      expect(receiver.user_friend_requests?(sender)).to be(true)
     end
   end
 end
